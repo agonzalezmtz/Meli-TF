@@ -1,0 +1,40 @@
+# Set the maximum time the pipeline can run.
+	# 'terraform apply' can be slow, so it's good to give it time (e.g., 20 minutes)
+	timeout: 600s  # 5 minutes
+
+steps:
+  # -----------------------------------------------------------------
+  # STEP 1: TERRAFORM INIT
+  # -----------------------------------------------------------------
+  # Initializes Terraform.
+  # Using a remote backend (a GCS bucket) is MANDATORY
+  # because the Cloud Build environment is ephemeral (deleted after the run).
+  - name: 'hashicorp/terraform:latest'
+    args:
+      - 'init'
+      - '-backend-config=bucket=your-tfstate-bucket' # <-- IMPORTANT! Replace this
+
+  # -----------------------------------------------------------------
+  # STEP 2: TERRAFORM PLAN
+  # -----------------------------------------------------------------
+  # Creates the execution plan and saves it to a 'tfplan' file.
+  # Saving the plan is a best practice to ensure that 'apply'
+  # runs exactly what was planned.
+  - name: 'hashicorp/terraform:latest'
+    args: ['plan', '-out=tfplan']
+
+  # -----------------------------------------------------------------
+  # STEP 3: TERRAFORM APPLY
+  # -----------------------------------------------------------------
+  # Applies the saved plan.
+  # '-auto-approve' is VITAL so the pipeline doesn't
+  # get stuck waiting for someone to manually type 'yes'.
+  - name: 'hashicorp/terraform:latest'
+    args: ['apply', '-auto-approve', 'tfplan']
+
+# Optional: If you want to save the 'tfplan' file after
+# the execution (for auditing), you can define it as an artifact.
+artifacts:
+  objects:
+    location: 'gs://your-tfstate-bucket/' # The same bucket or a different one
+    paths: ['tfplan']
