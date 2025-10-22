@@ -1,39 +1,52 @@
-# Meli-TF/terraform/modules/cloudrun/variables.tf
+# Meli-TF/terraform/modules/cloudrun/main.tf
 
-variable "project_id" {
-  description = "The GCP project ID where the service will be deployed."
-  type        = string
+# 1. The Cloud Run Service Resource
+resource "google_cloud_run_v2_service" "default" {
+  name     = var.service_name
+  location = var.location
+  project  = var.project_id
+
+  # Defines the "template" for new revisions
+  template {
+    containers {
+      image = var.image_name
+
+      ports {
+        container_port = var.container_port
+      }
+
+      # This dynamic block loops over the 'environment_variables' map
+      # and creates an 'env' block for each key/value pair.
+      dynamic "env" {
+        for_each = var.environment_variables
+        content {
+          name  = env.key
+          value = env.value
+        }
+      }
+    }
+  }
+
+  # This ensures the service routes 100% of traffic to the latest revision
+  traffic {
+    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
+    percent = 100
+  }
 }
 
-variable "location" {
-  description = "The GCP region for the service (e.g., 'us-central1')."
-  type        = string
-}
+# 2. The IAM Policy for Public Access
+# This resource is created CONDITIONALLY.
+resource "google_cloud_run_service_iam_member" "public_invoker" {
+  # 'count' is the magic: if var.allow_unauthenticated is 'true', count = 1 (create it).
+  # If 'false', count = 0 (do not create it).
+  count = var.allow_unauthenticated ? 1 : 0
 
-variable "service_name" {
-  description = "The name of the Cloud Run service."
-  type        = string
-}
+  location = google_cloud_run_v2_service.default.location
+  project  = google_cloud_run_v2_service.default.project
+  service  = google_cloud_run_v2_service.default.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
 
-variable "image_name" {
-  description = "The full path to the container image (e.g., 'gcr.io/my-project/my-image:latest')."
-  type        = string
-}
-
-variable "allow_unauthenticated" {
-  description = "If true, allows public, unauthenticated access to the service."
-  type        = bool
-  default     = false
-}
-
-variable "container_port" {
-  description = "The port your container listens on."
-  type        = number
-  default     = 8080
-}
-
-variable "environment_variables" {
-  description = "A map of environment variables to set in the container."
-  type        = map(string)
-  default     = {}
+  # Depends on the service being created first
+  depends_on = [google_cloud_run_v2_service.default]
 }
