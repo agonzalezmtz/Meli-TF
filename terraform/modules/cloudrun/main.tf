@@ -23,7 +23,7 @@ resource "google_cloud_run_v2_service" "default" {
       ports {
         container_port = var.container_port
       }
-
+}
       # This dynamic block loops over the 'environment_variables' map
       # and creates an 'env' block for each key/value pair.
       dynamic "env" {
@@ -35,6 +35,7 @@ resource "google_cloud_run_v2_service" "default" {
       }
     }
   }
+
 
   # This ensures the service routes 100% of traffic to the latest revision
   traffic {
