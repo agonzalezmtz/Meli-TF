@@ -7,7 +7,7 @@ resource "google_cloud_run_v2_service" "default" {
   project  = var.project_id
 
   deletion_protection = var.deletion_protection
-  
+  invoker_iam_disabled = var.invoker_iam_disabled
   ingress = var.ingress_settings
 
   # Defines the "template" for new revisions
@@ -38,19 +38,21 @@ resource "google_cloud_run_v2_service" "default" {
   }
 }
 
-# 2. The IAM Policy for Public Access
-# This resource is created CONDITIONALLY.
-resource "google_cloud_run_service_iam_member" "public_invoker" {
-  # 'count' is the magic: if var.allow_unauthenticated is 'true', count = 1 (create it).
-  # If 'false', count = 0 (do not create it).
-  count = var.allow_unauthenticated ? 1 : 0
+## Due to an organization policy this BLOCK is not neccesary
 
-  location = google_cloud_run_v2_service.default.location
-  project  = google_cloud_run_v2_service.default.project
-  service  = google_cloud_run_v2_service.default.name
-  role     = "roles/run.invoker"
-  member   = "user:alonso@luisalcantara.altostrat.com"
+# # 2. The IAM Policy for Public Access
+# # This resource is created CONDITIONALLY.
+# resource "google_cloud_run_service_iam_member" "public_invoker" {
+#   # 'count' is the magic: if var.allow_unauthenticated is 'true', count = 1 (create it).
+#   # If 'false', count = 0 (do not create it).
+#   count = var.allow_unauthenticated ? 1 : 0
 
-  # Depends on the service being created first
-  depends_on = [google_cloud_run_v2_service.default]
-}
+#   location = google_cloud_run_v2_service.default.location
+#   project  = google_cloud_run_v2_service.default.project
+#   service  = google_cloud_run_v2_service.default.name
+#   role     = "roles/run.invoker"
+#   member   = "allUsers"
+
+#   # Depends on the service being created first
+#   depends_on = [google_cloud_run_v2_service.default]
+#}

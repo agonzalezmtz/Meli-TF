@@ -22,6 +22,12 @@ variable "ingress_settings" {
   default     = "INGRESS_TRAFFIC_ALL" # Default to public
 }
 
+variable "invoker_iam_disabled" {
+  description = "Enable public access without validate an IAM policy"
+  type        = bool
+  default     = true
+}
+
 variable "service_name" {
   description = "The name of the Cloud Run service."
   type        = string

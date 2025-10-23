@@ -27,7 +27,9 @@ module "test_meli_service" {
   container_port = 80
   environment_variables = {}
 
-  deletion_protection = false
+  deletion_protection  = false
+  ingress_settings     = "INGRESS_TRAFFIC_ALL"
+  invoker_iam_disabled = true
 }
 
 
