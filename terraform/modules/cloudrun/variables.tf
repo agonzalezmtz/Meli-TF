@@ -10,6 +10,12 @@ variable "location" {
   type        = string
 }
 
+variable "delete_protection" {
+  description = "If true, protects the Cloud Run service from accidental deletion."
+  type        = bool
+  default     = true # Default to ON for safety
+}
+
 variable "service_name" {
   description = "The name of the Cloud Run service."
   type        = string

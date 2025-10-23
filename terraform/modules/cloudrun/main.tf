@@ -6,7 +6,7 @@ resource "google_cloud_run_v2_service" "default" {
   location = var.location
   project  = var.project_id
 
-  deletion_protection = false
+  deletion_protection = var.deletion_protection
 
   # Defines the "template" for new revisions
   template {
