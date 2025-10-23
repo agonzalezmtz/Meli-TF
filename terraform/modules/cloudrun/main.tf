@@ -14,6 +14,11 @@ resource "google_cloud_run_v2_service" "default" {
   template {
     containers {
       image = var.image_name
+      resources {
+        limits = {
+          cpu    = var.cpu
+          memory = var.memory
+        }
 
       ports {
         container_port = var.container_port

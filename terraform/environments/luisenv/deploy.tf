@@ -23,7 +23,9 @@ module "test_meli_service" {
   location              = "us-central1"
   service_name          = "test-meli"
   image_name            = "docker.io/nginx:latest" # Standard Google test image
-  allow_unauthenticated = true                     # Make the service public
+  cpu                   = "2"      
+  memory                = "1Gi"    
+  #allow_unauthenticated = true                     # Not neccesary
   container_port = 80
   environment_variables = {}
 

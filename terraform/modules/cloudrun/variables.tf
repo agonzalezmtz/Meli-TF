@@ -38,11 +38,23 @@ variable "image_name" {
   type        = string
 }
 
-variable "allow_unauthenticated" {
-  description = "If true, allows public, unauthenticated access to the service."
-  type        = bool
-  default     = false
+variable "cpu" {
+  description = "The amount of CPU to use in the container."
+  type        = string
+  default     = "1"
 }
+
+variable "memory" {
+  description = "The amount of memory RAM to use in the container. "
+  type        = string
+  default     = "512 Mi"
+}
+
+# variable "allow_unauthenticated" {
+#   description = "If true, allows public, unauthenticated access to the service."
+#   type        = bool
+#   default     = false
+# }
 
 variable "container_port" {
   description = "The port your container listens on."
