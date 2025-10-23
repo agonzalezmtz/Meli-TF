@@ -17,7 +17,7 @@ variable "deletion_protection" {
 }
 
 variable "ingress_settings" {
-  description = "Ingress traffic controls. e.g., INGRESS_TRAFFIC_ALL or INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
+  description = "Ingress traffic controls. e.g., INGRESS_TRAFFIC_ALL, INGRESS_TRAFFIC_INTERNAL_ONLY or INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
   type        = string
   default     = "INGRESS_TRAFFIC_ALL" # Default to public
 }

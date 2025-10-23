@@ -28,7 +28,7 @@ module "test_meli_service" {
   environment_variables = {}
 
   deletion_protection  = false
-  ingress_settings     = "INGRESS_TRAFFIC_ALL"
+  ingress_settings     = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
   invoker_iam_disabled = true
 }
 
