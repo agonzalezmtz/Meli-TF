@@ -16,6 +16,12 @@ variable "deletion_protection" {
   default     = true # Default to ON for safety
 }
 
+variable "ingress_settings" {
+  description = "Ingress traffic controls. e.g., INGRESS_TRAFFIC_ALL or INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
+  type        = string
+  default     = "INGRESS_TRAFFIC_ALL" # Default to public
+}
+
 variable "service_name" {
   description = "The name of the Cloud Run service."
   type        = string

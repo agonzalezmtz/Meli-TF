@@ -7,6 +7,8 @@ resource "google_cloud_run_v2_service" "default" {
   project  = var.project_id
 
   deletion_protection = var.deletion_protection
+  
+  ingress = var.ingress_settings
 
   # Defines the "template" for new revisions
   template {
