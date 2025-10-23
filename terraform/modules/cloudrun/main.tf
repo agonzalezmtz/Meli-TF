@@ -7,11 +7,11 @@ resource "google_cloud_run_v2_service" "default" {
   deletion_protection = var.deletion_protection
   invoker_iam_disabled = var.invoker_iam_disabled
   ingress = var.ingress_settings
+  max_instance_request_concurrency  = var.max_instance_request_concurrency
 
    scaling {
     min_instance_count                = var.min_instance_count
     max_instance_count                = var.max_instance_count
-    max_instance_request_concurrency  = var.max_instance_request_concurrency
   }
 
   # Defines the "template" for new revisions
