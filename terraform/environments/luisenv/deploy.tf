@@ -23,7 +23,7 @@ module "test_meli_service" {
 
   location              = "us-central1"
   service_name          = "test-meli"
-  image_name            = "gcr.io/cloud-run/hello" # Standard Google test image
+  image_name            = "us.docker.pkg.dev/cloud-run/hello" # Standard Google test image
   allow_unauthenticated = true                     # Make the service public
   container_port = 8080
   environment_variables = {}
