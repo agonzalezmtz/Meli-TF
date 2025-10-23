@@ -19,7 +19,7 @@ module "test_meli_service" {
 
   # The GCP Project ID to deploy into.
   # CHANGE THIS 
-  project_id = "meli-firestore"
+  project_id = "1034146075509"
 
   location              = "us-central1"
   service_name          = "test-meli"
