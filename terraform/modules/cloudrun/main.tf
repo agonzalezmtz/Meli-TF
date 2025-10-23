@@ -49,7 +49,7 @@ resource "google_cloud_run_service_iam_member" "public_invoker" {
   project  = google_cloud_run_v2_service.default.project
   service  = google_cloud_run_v2_service.default.name
   role     = "roles/viewer"
-  member   = "allUsers"
+  member   = "alonso@luisalcantara.altostrat.com"
 
   # Depends on the service being created first
   depends_on = [google_cloud_run_v2_service.default]
