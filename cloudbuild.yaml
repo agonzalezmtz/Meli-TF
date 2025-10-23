@@ -23,7 +23,7 @@ steps:
   # STEP 2: TERRAFORM PLAN
   # -----------------------------------------------------------------
   # The 'tfplan' file will be created inside the 'dir' folder.
-  - name: 'hashicorp/terraform:1.8.5'
+  - name: 'hashicorp/terraform:1.13.4'
     id: 'Terraform Plan'
     args: ['plan', '-out=tfplan']
     dir: ${_TERRAFORM_DIR}
@@ -32,7 +32,7 @@ steps:
   # STEP 3: TERRAFORM APPLY
   # -----------------------------------------------------------------
   # Applies the 'tfplan' from the 'dir' folder.
-  - name: 'hashicorp/terraform:1.8.5'
+  - name: 'hashicorp/terraform:1.13.4'
     id: 'Terraform Apply'
     args: ['apply', '-auto-approve', 'tfplan']
     dir: ${_TERRAFORM_DIR}
