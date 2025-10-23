@@ -10,7 +10,7 @@ variable "location" {
   type        = string
 }
 
-variable "delete_protection" {
+variable "deletion_protection" {
   description = "If true, protects the Cloud Run service from accidental deletion."
   type        = bool
   default     = true # Default to ON for safety
