@@ -11,24 +11,27 @@ terraform {
 }
 
 # Call our custom "cloudrun" module.
-module "luis_test_app" {
+module "test_meli_service" {
   # Relative path to the module directory from this file.
   source = "../../modules/cloudrun"
 
   # --- Pass variables to the module ---
 
   # The GCP Project ID to deploy into.
-  # !! MUST CHANGE THIS !!
-  project_id = "TU_ID_DE_PROYECTO_GCP"
+  # CHANGE THIS 
+  project_id = "meli-firestore"
 
   location              = "us-central1"
-  service_name          = "luis-env-test-app"
+  service_name          = "test-meli"
   image_name            = "gcr.io/cloud-run/hello" # Standard Google test image
   allow_unauthenticated = true                     # Make the service public
+  container_port = 8080
+  environment_variables = {}
 }
+
 
 # Output the URL of the service after it's deployed.
 output "service_url" {
   description = "The URL of the deployed test service."
-  value       = module.luis_test_app.service_url
+  value       = module.test_meli_service.service_url
 }
