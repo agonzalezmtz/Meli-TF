@@ -20,15 +20,15 @@ module "test_meli_service" {
   # The GCP Project ID to deploy into.
   project_id = "1034146075509"
 
-  location                          = "us-central1"
-  service_name                      = "test-meli"
-  image_name                        = "docker.io/nginx:latest" # Standard Google test image
-  cpu                               = 2      
-  memory                            = "1Gi"
-  min_instance_count                = 0
-  max_instance_count                = 100
-  max_instance_request_concurrency  = 80
-  container_port                    = 80
+  location                  = "us-central1"
+  service_name              = "test-meli"
+  image_name                = "docker.io/nginx:latest" # Standard Google test image
+  cpu                       = 2      
+  memory                    = "1Gi"
+  min_instance_count        = 0
+  max_instance_count        = 100
+  container_concurrency     = 80
+  container_port            = 80
   
 
   deletion_protection  = false
