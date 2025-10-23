@@ -48,7 +48,7 @@ resource "google_cloud_run_service_iam_member" "public_invoker" {
   location = google_cloud_run_v2_service.default.location
   project  = google_cloud_run_v2_service.default.project
   service  = google_cloud_run_v2_service.default.name
-  role     = "roles/viewer"
+  role     = "roles/run.invoker"
   member   = "user:alonso@luisalcantara.altostrat.com"
 
   # Depends on the service being created first
