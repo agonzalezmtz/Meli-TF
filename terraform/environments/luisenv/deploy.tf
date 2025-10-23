@@ -27,7 +27,7 @@ module "test_meli_service" {
   memory                    = "1Gi"
   min_instance_count        = 0
   max_instance_count        = 100
-  container_concurrency     = 80
+  max_instance_request_concurrency    = 80
   container_port            = 80
   
 

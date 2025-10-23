@@ -62,7 +62,7 @@ variable "min_instance_count" {
   default     = 0
 }
 
-variable "container_concurrency" {
+variable "max_instance_request_concurrency" {
   description = "The amount of maximum concurrency for the container (As Maximum 1000) "
   type        = number
   default     = 80

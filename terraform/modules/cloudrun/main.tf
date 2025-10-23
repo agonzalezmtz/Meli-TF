@@ -15,8 +15,7 @@ resource "google_cloud_run_v2_service" "default" {
 
   # Defines the "template" for new revisions
   template {
-    concurrency = var.container_concurrency
-
+    max_instance_request_concurrency  = var.max_instance_request_concurrency
     containers {
       image = var.image_name
       resources {
