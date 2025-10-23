@@ -40,7 +40,7 @@ steps:
 # Optional: Save the 'tfplan' file for auditing
 artifacts:
   objects:
-    # !! CHANGE THIS and select your bucket
+    # CHANGE THIS and select your bucket
     location: 'gs://meli-tf/artifacts/'
     
     # We must specify the full path to the plan file
