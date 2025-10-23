@@ -2,6 +2,10 @@
 # GKE apply can take 15-20 minutes, so 20m or more is safer.
 timeout: 1500s  # 25 minutes
 
+# This tells Cloud Build to send logs ONLY to Cloud Logging
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
   # -----------------------------------------------------------------
   # STEP 1: TERRAFORM INIT
