@@ -25,7 +25,7 @@ module "test_meli_service" {
   image_name                        = "docker.io/nginx:latest" # Standard Google test image
   cpu                               = 2      
   memory                            = "1Gi"
-  max_instance_count                = 0
+  min_instance_count                = 0
   max_instance_count                = 100
   max_instance_request_concurrency  = 80
   container_port                    = 80
