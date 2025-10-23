@@ -40,8 +40,8 @@ variable "image_name" {
 
 variable "cpu" {
   description = "The amount of CPU to use in the container."
-  type        = string
-  default     = "1"
+  type        = number
+  default     = 1
 }
 
 variable "memory" {
@@ -50,11 +50,23 @@ variable "memory" {
   default     = "512 Mi"
 }
 
-# variable "allow_unauthenticated" {
-#   description = "If true, allows public, unauthenticated access to the service."
-#   type        = bool
-#   default     = false
-# }
+variable "max_instance_count" {
+  description = "The amount of maximum instances for the container "
+  type        = number
+  default     = 100
+}
+
+variable "min_instance_count" {
+  description = "The amount of minimum instances for the container "
+  type        = number
+  default     = 0
+}
+
+variable "max_instance_request_concurrency" {
+  description = "The amount of maximum concurrency for the container (As Maximum 1000) "
+  type        = number
+  default     = 80
+}
 
 variable "container_port" {
   description = "The port your container listens on."
@@ -62,8 +74,14 @@ variable "container_port" {
   default     = 8080
 }
 
-variable "environment_variables" {
-  description = "A map of environment variables to set in the container."
-  type        = map(string)
-  default     = {}
-}
+# variable "allow_unauthenticated" {
+#   description = "If true, allows public, unauthenticated access to the service."
+#   type        = bool
+#   default     = false
+# }
+
+# variable "environment_variables" {
+#   description = "A map of environment variables to set in the container."
+#   type        = map(string)
+#   default     = {}
+# }

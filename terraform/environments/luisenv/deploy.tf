@@ -20,18 +20,23 @@ module "test_meli_service" {
   # The GCP Project ID to deploy into.
   project_id = "1034146075509"
 
-  location              = "us-central1"
-  service_name          = "test-meli"
-  image_name            = "docker.io/nginx:latest" # Standard Google test image
-  cpu                   = "2"      
-  memory                = "1Gi"    
-  #allow_unauthenticated = true                     # Not neccesary
-  container_port = 80
-  environment_variables = {}
+  location                          = "us-central1"
+  service_name                      = "test-meli"
+  image_name                        = "docker.io/nginx:latest" # Standard Google test image
+  cpu                               = 2      
+  memory                            = "1Gi"
+  max_instance_count                = 0
+  max_instance_count                = 100
+  max_instance_request_concurrency  = 80
+  container_port                    = 80
+  
 
   deletion_protection  = false
   ingress_settings     = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
   invoker_iam_disabled = true
+
+  #allow_unauthenticated = true                     # Not neccesary for now
+  #environment_variables = {}
 }
 
 

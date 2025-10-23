@@ -1,6 +1,4 @@
 # Meli-TF/terraform/modules/cloudrun/main.tf
-
-# 1. The Cloud Run Service Resource
 resource "google_cloud_run_v2_service" "default" {
   name     = var.service_name
   location = var.location
@@ -9,6 +7,12 @@ resource "google_cloud_run_v2_service" "default" {
   deletion_protection = var.deletion_protection
   invoker_iam_disabled = var.invoker_iam_disabled
   ingress = var.ingress_settings
+
+   scaling {
+    min_instance_count                = var.min_instance_count
+    max_instance_count                = var.max_instance_count
+    max_instance_request_concurrency  = var.max_instance_request_concurrency
+  }
 
   # Defines the "template" for new revisions
   template {
@@ -19,22 +23,23 @@ resource "google_cloud_run_v2_service" "default" {
           cpu    = var.cpu
           memory = var.memory
         }
+      }
 
       ports {
         container_port = var.container_port
       }
-}
-      # This dynamic block loops over the 'environment_variables' map
-      # and creates an 'env' block for each key/value pair.
-      dynamic "env" {
-        for_each = var.environment_variables
-        content {
-          name  = env.key
-          value = env.value
-        }
-      }
-    }
-  }
+
+      # # This dynamic block loops over the 'environment_variables' map
+      # # and creates an 'env' block for each key/value pair.
+      # dynamic "env" {
+      #   for_each = var.environment_variables
+      #   content {
+      #     name  = env.key
+      #     value = env.value
+      #   } 
+      # } 
+    } 
+  } 
 
 
   # This ensures the service routes 100% of traffic to the latest revision
