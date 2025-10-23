@@ -1,25 +1,76 @@
 # Meli-TF/terraform/modules/gke/main.tf
 
+# 1. The GKE Cluster (Control Plane)
 resource "google_container_cluster" "primary" {
   project  = var.project_id
   name     = var.cluster_name
-  location = var.location
+  location = var.location # This var controls Zonal vs. Regional deployment
 
   # --- Network Configuration ---
   network    = var.network_name
   subnetwork = var.subnetwork_name
 
   # --- Autopilot vs. Standard Logic ---
-  # If true, GKE ignores the node_config and initial_node_count below.
-  # If false, GKE uses them to build the default node pool.
+  # If true, creates an Autopilot cluster.
+  # If false, creates a Standard cluster.
   enable_autopilot = var.is_autopilot
 
-  # --- Standard Node Pool Configuration ---
-  # This block is only used if 'enable_autopilot' is false.
-  initial_node_count = var.node_initial_count
+  # --- Best Practice: Use Release Channels ---
+  release_channel {
+    channel = var.release_channel
+  }
+
+  # --- Best Practice: Remove the default node pool ---
+  # This lets us create our own managed, conditional node pool below.
+  # This replaces the old 'initial_node_count' and top-level 'node_config'
+  remove_default_node_pool = true
+
+  # --- Security Best Practice: Private Cluster ---
+  private_cluster_config {
+    enable_private_nodes    = true
+    enable_private_endpoint = true
+    master_ipv4_cidr_block  = var.master_ipv4_cidr_block
+  }
+
+  # Required for private clusters to be VPC-native
+  ip_allocation_policy {
+    # Let GCP handle the secondary ranges
+  }
+
+  # Disables access to the master from external IPs
+  master_authorized_networks_config {
+    # No networks listed, blocks all
+  }
+
+  # Enables monitoring and logging
+  monitoring_config {
+    enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
+  }
+  logging_config {
+    enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
+  }
+}
+
+# 2. The GKE Node Pool (Worker Nodes)
+#    This resource will ONLY be created if 'var.is_autopilot' is 'false'.
+resource "google_container_node_pool" "primary_nodes" {
+  # --- Conditional Creation Logic ---
+  # If is_autopilot is true, count = 0 (no resource created)
+  # If is_autopilot is false, count = 1 (this resource is created)
+  count = var.is_autopilot ? 0 : 1
+
+  name       = var.node_pool_name
+  cluster    = google_container_cluster.primary.id
+  location   = google_container_cluster.primary.location
+  node_count = var.node_count
+
+  # --- Node Configuration (This is where you define the machines) ---
   node_config {
-    machine_type = var.node_machine_type
-    
+    machine_type = var.node_machine_type # e.g., "e2-medium"
+    disk_size_gb = var.node_disk_size_gb # e.g., 100
+    disk_type    = var.node_disk_type    # e.g., "pd-standard" or "pd-ssd"
+    preemptible  = var.node_preemptible  # Use Spot VMs
+
     # Standard GKE service account scopes
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
@@ -28,22 +79,9 @@ resource "google_container_cluster" "primary" {
     ]
   }
 
-  # --- Security Best Practice: Private Cluster ---
-  # This configuration ensures nodes have no public IPs and the
-  # master is only accessible via its private endpoint.
-  private_cluster_config {
-    enable_private_nodes    = true
-    enable_private_endpoint = true
-    master_ipv4_cidr_block  = var.master_ipv4_cidr_block
-  }
-
-  # This is required for private clusters to be VPC-native
-  ip_allocation_policy {
-    # Let GCP handle the secondary ranges
-  }
-
-  # Disables access to the master from external IPs
-  master_authorized_networks_config {
-    # No networks listed, blocks all
+  # Autoscaling for the Standard node pool
+  management {
+    auto_repair  = true
+    auto_upgrade = true
   }
 }
