@@ -38,19 +38,19 @@ resource "google_cloud_run_v2_service" "default" {
   }
 }
 
-# # 2. The IAM Policy for Public Access
-# # This resource is created CONDITIONALLY.
-# resource "google_cloud_run_service_iam_member" "public_invoker" {
-#   # 'count' is the magic: if var.allow_unauthenticated is 'true', count = 1 (create it).
-#   # If 'false', count = 0 (do not create it).
-#   count = var.allow_unauthenticated ? 1 : 0
+# 2. The IAM Policy for Public Access
+# This resource is created CONDITIONALLY.
+resource "google_cloud_run_service_iam_member" "public_invoker" {
+  # 'count' is the magic: if var.allow_unauthenticated is 'true', count = 1 (create it).
+  # If 'false', count = 0 (do not create it).
+  count = var.allow_unauthenticated ? 1 : 0
 
-#   location = google_cloud_run_v2_service.default.location
-#   project  = google_cloud_run_v2_service.default.project
-#   service  = google_cloud_run_v2_service.default.name
-#   role     = "roles/run.invoker"
-#   member   = "allUsers"
+  location = google_cloud_run_v2_service.default.location
+  project  = google_cloud_run_v2_service.default.project
+  service  = google_cloud_run_v2_service.default.name
+  role     = "roles/viewer"
+  member   = "allUsers"
 
-#   # Depends on the service being created first
-#   depends_on = [google_cloud_run_v2_service.default]
-# }
+  # Depends on the service being created first
+  depends_on = [google_cloud_run_v2_service.default]
+}
