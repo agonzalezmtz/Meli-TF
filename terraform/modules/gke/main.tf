@@ -66,6 +66,11 @@ resource "google_container_node_pool" "primary_nodes" {
   # If is_autopilot is false, count = 1 (this resource is created)
   count = var.is_autopilot ? 0 : 1
 
+  # The node pool resource needs the project ID specified explicitly,
+  # it doesn't automatically inherit it from the cluster.
+  project = var.project_id
+  # ----------------------------------------
+
   name       = var.node_pool_name
   cluster    = google_container_cluster.primary.id
   location   = google_container_cluster.primary.location
