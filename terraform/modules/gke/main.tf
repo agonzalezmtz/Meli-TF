@@ -10,20 +10,26 @@ resource "google_container_cluster" "primary" {
   network    = var.network_name
   subnetwork = var.subnetwork_name
 
-  # --- Autopilot vs. Standard Logic ---
-  # If true, creates an Autopilot cluster.
-  # If false, creates a Standard cluster.
-  enable_autopilot = var.is_autopilot
+  # --- Autopilot vs. Standard Logic (FIXED) ---
+  #
+  # We use a ternary operator to set one argument or the other to 'null'.
+  # 'null' tells Terraform to completely ignore the argument,
+  # which resolves the conflict.
+
+  # If is_autopilot is true, set this to true.
+  # If is_autopilot is false, set this to 'null' (ignored).
+  enable_autopilot = var.is_autopilot ? true : null
 
   # --- Best Practice: Use Release Channels ---
   release_channel {
     channel = var.release_channel
   }
 
-  # --- Best Practice: Remove the default node pool ---
-  # This lets us create our own managed, conditional node pool below.
-  # This replaces the old 'initial_node_count' and top-level 'node_config'
-  remove_default_node_pool = true
+  # --- Best Practice: Remove the default node pool (FIXED) ---
+  #
+  # If is_autopilot is true, set this to 'null' (ignored).
+  # If is_autopilot is false, set this to 'true' (as intended for Standard).
+  remove_default_node_pool = var.is_autopilot ? null : true
 
   # --- Security Best Practice: Private Cluster ---
   private_cluster_config {
@@ -53,6 +59,7 @@ resource "google_container_cluster" "primary" {
 
 # 2. The GKE Node Pool (Worker Nodes)
 #    This resource will ONLY be created if 'var.is_autopilot' is 'false'.
+#    (This section was already correct)
 resource "google_container_node_pool" "primary_nodes" {
   # --- Conditional Creation Logic ---
   # If is_autopilot is true, count = 0 (no resource created)
