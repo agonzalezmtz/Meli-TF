@@ -43,32 +43,33 @@ output "service_url" {
 }
 
 
-# # Call our custom "GKE" module.
-# module "test_meli_gkecluster-standard" {
-#   # Relative path to the module directory from this file.
-#   source = "../../modules/gke"
+# Call our custom "GKE" module.
+module "test_meli_gkecluster-standard" {
+  # Relative path to the module directory from this file.
+  source = "../../modules/gke"
 
-#   # --- General Cluster Settings ---
-#   project_id   = "1034146075509"
-#   cluster_name = "meli-gke"    
-#   location     = "us-central1" 
+  # --- General Cluster Settings ---
+  project_id   = "1034146075509"
+  cluster_name = "meli-gke"    
+  location     = "us-central1" 
 
-#   # --- Network Settings (REPLACE THESE VALUES) ---
-#   network_name           = "my-vpc-network"
-#   subnetwork_name        = "my-gke-subnet"
-#   master_ipv4_cidr_block = "172.16.0.0/28" # It must be CIDR Range /28
+  # --- Network Settings (REPLACE THESE VALUES) ---
+  network_name           = "meli-vpc-test"
+  subnetwork_name        = "meli-gke-nodes"
+  master_ipv4_cidr_block = "172.16.0.0/28" # It must be CIDR Range /28
 
-#   # --- Deployment Type (Standard) ---
-#   is_autopilot = false # CHECK THIS 'enable_autopilot'
+  # --- Deployment Type (Standard) ---
+  is_autopilot = false # CHECK THIS 'enable_autopilot'
 
-#   # --- Standard Node Pool Settings (Activado porque is_autopilot=false) ---
-#   node_pool_name    = "default-pool"
-#   node_count        = 3                 
-#   node_machine_type = "e2-medium"       
-#   node_disk_size_gb = 100
-#   node_disk_type    = "pd-standard"
-#   node_preemptible  = false
-# }
+  # --- Standard Node Pool Settings (ENABLE in case of is_autopilot=false) ---
+  node_pool_name    = "gke-pool-meli"
+  node_count        = 1                 
+  node_machine_type = "e2-medium"       
+  node_disk_size_gb = 50
+  node_disk_type    = "pd-standard"
+  node_preemptible  = false
+}
+
 
 # # Call our custom "GKE" module to create an AUTOPILOT cluster
 # module "test_meli_gkecluster_autopilot" {
