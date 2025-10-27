@@ -5,7 +5,7 @@
 resource "google_firestore_database" "database" {
   project     = var.project_id
   name        = var.database_name
-  location_id = var.location_id # e.g., "us-central" or "nam5"
+  location_id = var.location_id # e.g., "us-central"
 
   # --- This is the key for your request ---
   edition = "ENTERPRISE"
@@ -17,24 +17,26 @@ resource "google_firestore_database" "database" {
 }
 
 # 2. (Optional) Create MongoDB-Compatible Indexes
-dynamic "google_firestore_index" "default" {
+resource "google_firestore_index" "default" {
   # Create an index for each item in the 'indexes' variable
   for_each = { for idx in var.indexes : idx.collection => idx }
 
-  content {
-    project    = var.project_id
-    database   = google_firestore_database.database.name
-    collection = google_firestore_index.value.collection
+  
+  project    = var.project_id
+  database   = google_firestore_database.database.name
+  
+  # CORRECCIÓN 3: Usa 'each.value' para referenciar el bucle 'for_each'
+  collection = each.value.collection
 
-    # Specify that this index is for the MongoDB API
-    api_scope = "MONGODB_COMPATIBLE_API"
+  # Specify that this index is for the MongoDB API
+  api_scope = "MONGODB_COMPATIBLE_API"
 
-    dynamic "fields" {
-      for_each = google_firestore_index.value.fields
-      content {
-        field_path = fields.value.field_path
-        order      = fields.value.order
-      }
+  dynamic "fields" {
+    for_each = each.value.fields
+    
+    content {
+      field_path = fields.value.field_path
+      order      = fields.value.order
     }
   }
 }
